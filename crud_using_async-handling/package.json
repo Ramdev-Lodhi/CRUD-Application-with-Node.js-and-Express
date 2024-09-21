@@ -1,0 +1,23 @@
+{
+  "name": "cmsbackend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon src/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.4",
+    "prettier": "3.3.3"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.19.1",
+    "cmsbackend": "file:",
+    "express": "^4.20.0",
+    "express-async-handler": "^1.2.0",
+    "mysql": "^2.18.1",
+    "prisma": "^5.19.1"
+  }
+}
