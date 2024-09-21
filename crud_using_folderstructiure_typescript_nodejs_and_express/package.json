@@ -3,13 +3,16 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "test": "node test.js",
+    "start": "node index.js",
+    "prepare": "husky"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "crud_using_folderstructiure_typescript_nodejs_and_express": "file:"
+    "crud_using_folderstructiure_typescript_nodejs_and_express": "file:",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10"
   }
 }
