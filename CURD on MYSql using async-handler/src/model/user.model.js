@@ -10,20 +10,20 @@ const getUserById = async (id) => {
   return result[0][0];
 };
 
-const insertUser = async (userData) => {
-  const { name, caste, city } = userData;
+const insertUser = async (userData, image) => {
+  const { name, caste, city, email } = userData;
   const result = await db.query(
-    "INSERT INTO user (name, caste, city) VALUES (?, ?, ?)",
-    [name, caste, city]
+    "INSERT INTO user (name, caste, city,email,image) VALUES (?, ?, ?,?,?)",
+    [name, caste, city, email, image]
   );
   return result[0];
 };
 
 const updateUser = async (id, userData) => {
-  const { name, caste, city } = userData;
+  const { name, caste, city, image } = userData;
   const result = await db.query(
     "UPDATE user SET name = ?, caste = ?, city = ? WHERE id = ?",
-    [name, caste, city, id]
+    [name, caste, city, image, id]
   );
   if (result[0].affectedRows == 1) return "Data Inserted Sucessfully";
 };
@@ -32,6 +32,14 @@ const deleteUser = async (id) => {
   const result = await db.query("DELETE FROM user WHERE id = ?", [id]);
   return result[0];
 };
+
+const profileUser = async (filename) => {
+  const result = await db.query("INSERT INTO user (image) VALUES (?)", [
+    filename,
+  ]);
+  return result[0];
+};
+
 const registerUser = async (userData) => {
   console.log(userData);
   const { name, city, email, mobile_no, password } = userData;
@@ -87,4 +95,5 @@ module.exports = {
   deleteUser,
   loginUser,
   registerUser,
+  profileUser,
 };

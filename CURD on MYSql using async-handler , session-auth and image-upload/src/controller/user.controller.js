@@ -1,8 +1,11 @@
 const asynchandlr = require("express-async-handler");
-const userModel = require("../model/user.model");
+// const userModel = require("../model/user.model");
+const { userModel } = require("../model/index");
 const ResponseMessage = require("../constant/responseMessage");
 const HttpResponse = require("../util/httpResponse");
 const HttpError = require("../util/httpError");
+const session = require("../middleware/session");
+const responseMessage = require("../constant/responseMessage");
 
 const getUsers = asynchandlr(async (req, res) => {
   const users = await userModel.getAllUsers();
@@ -21,15 +24,16 @@ const getUserById = asynchandlr(async (req, res, next) => {
 
 const insertUser = asynchandlr(async (req, res) => {
   const userData = req.body;
-  const image = req.file;
-  const newUser = await userModel.insertUser(userData, image);
+  const { filename, path: filepath } = req.file;
+  const newUser = await userModel.insertUser(userData, filename);
   HttpResponse(res, 201, ResponseMessage.USER_CREATED, newUser);
 });
 
 const updateUser = asynchandlr(async (req, res) => {
   const userId = parseInt(req.params.id, 10);
   const userData = req.body;
-  const updatedUser = await userModel.updateUser(userId, userData);
+  const { filename, path: filepath } = req.file;
+  const updatedUser = await userModel.updateUser(userId, userData, filename);
   HttpResponse(res, 200, ResponseMessage.USER_UPDATED, updatedUser);
 });
 
@@ -39,27 +43,24 @@ const deleteUser = asynchandlr(async (req, res) => {
   HttpResponse(res, 204, ResponseMessage.USER_DELETED);
 });
 
-const profileUser = asynchandlr(async (req, res) => {
+const imageUser = asynchandlr(async (req, res) => {
   if (req.file == undefined) {
     HttpError(res, 400, "No-file Selected");
   } else {
+    const userId = parseInt(req.params.id, 10);
     const { filename, path: filepath } = req.file;
-    const newUser = await userModel.profileUser(filename);
+    const newUser = await userModel.imageUser(filename, userId);
     HttpResponse(res, 200, "File uploaded successfull", newUser);
   }
 });
 
-const register = asynchandlr(async (req, res) => {
-  const userData = req.body;
-  const newUser = await userModel.registerUser(userData);
-  console.log("UserData:", newUser);
-  HttpResponse(res, 201, newUser.message, newUser.data);
-});
-
-const login = asynchandlr(async (req, res) => {
-  const { email, password } = req.params;
-  const user = await userModel.loginUser({ email, password });
-  HttpResponse(res, 200, user.message, user.data);
+const logout = asynchandlr(async (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return HttpError(res, 500, responseMessage.LOGOUT_FAILED);
+    }
+    HttpResponse(res, 200, responseMessage.LOGOUT);
+  });
 });
 
 module.exports = {
@@ -68,7 +69,6 @@ module.exports = {
   insertUser,
   updateUser,
   deleteUser,
-  register,
-  login,
-  profileUser,
+  logout,
+  imageUser,
 };

@@ -1,20 +1,16 @@
 // Express is a minimal and flexible Node.js web application framework that provides a robust set of features to develop web and mobile applications
 const express = require("express");
+require("dotenv").config();
 const { errorHandler } = require("./middleware/errorhandling");
 const globalErrorHandler = require("./middleware/globalErrorHandler");
-const path = require("path");
 const bodyParser = require("body-parser");
 const routes = require("./routes/v1");
-const app = express(); // Intialise the express
+const session = require("./middleware/session");
+const app = express();
 const port = 3000;
 
+app.use(session);
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, "../", "public")));
-
-app.use(
-  "profile",
-  express.static(path.join(__dirname, "../", "public/uploads"))
-);
 
 app.listen(port, (error) => {
   if (!error)
